@@ -1,11 +1,12 @@
-import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { env } from './config/env'
 import { AppStateProvider } from './context/AppStateProvider'
 import { ToastProvider } from './context/ToastProvider'
 import { SiteLayout } from './layouts/SiteLayout'
 import { RequireInvestor, RequireReport, RequireVerified } from './components/Guards'
 import Home from './pages/Home'
-import Start from './pages/Start'
+import Welcome from './pages/Welcome'
+import LoanPlanner from './pages/LoanPlanner'
 import HowItWorks from './pages/HowItWorks'
 import EntrepreneurVerify from './pages/EntrepreneurVerify'
 import EntrepreneurRecords from './pages/EntrepreneurRecords'
@@ -26,12 +27,14 @@ export default function App() {
       <Router>
         <Routes>
           <Route element={<SiteLayout />}>
-            <Route index element={<Home />} />
-            <Route path="start" element={<Start />} />
+            <Route index element={<Welcome />} />
+            <Route path="about" element={<Home />} />
+            <Route path="start" element={<Navigate to="/" replace />} />
             <Route path="how-it-works" element={<HowItWorks />} />
             <Route path="entrepreneur" element={<EntrepreneurVerify />} />
             <Route path="entrepreneur/records" element={<RequireVerified><EntrepreneurRecords /></RequireVerified>} />
             <Route path="entrepreneur/report" element={<RequireReport><EntrepreneurReport /></RequireReport>} />
+            <Route path="entrepreneur/loan-plan" element={<RequireReport><LoanPlanner /></RequireReport>} />
             <Route path="investor" element={<InvestorStart />} />
             <Route path="investor/dashboard" element={<RequireInvestor><InvestorDashboard /></RequireInvestor>} />
             <Route path="investor/listings/:id" element={<RequireInvestor><InvestorListing /></RequireInvestor>} />

@@ -6,6 +6,10 @@ const PATHS = {
   alert: 'M12 8v5M12 16.5v.5M10.3 3.9L2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z',
   menu: 'M4 7h16M4 12h16M4 17h16',
   close: 'M6 6l12 12M18 6L6 18',
+  mic: 'M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM5 11a7 7 0 0 0 14 0M12 18v3',
+  send: 'M4 12l16-8-6 16-2-7-8-1z',
+  speaker: 'M4 10v4h4l5 4V6L8 10H4zM16 9a4 4 0 0 1 0 6',
+  stop: 'M7 7h10v10H7z',
 }
 
 export function Icon({ name, size = 18, label }) {

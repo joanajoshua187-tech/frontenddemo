@@ -776,7 +776,7 @@
 
 .toast-stack {
   position: fixed;
-  right: var(--gutter);
+  left: var(--gutter);
   bottom: calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
   z-index: 60;
   display: flex;

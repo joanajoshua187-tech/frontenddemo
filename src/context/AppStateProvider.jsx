@@ -13,22 +13,25 @@ const initialState = {
   wallet: { balance: STARTING_BALANCE, starting: STARTING_BALANCE },
   holdings: [],
   simulated: false,
+  loanPlan: null,
 }
 
 function reducer(state, action) {
   switch (action.type) {
     case 'business/verified':
-      return { ...state, business: action.business, verification: action.verification, records: [], extraction: null, confirmed: false, shared: false }
+      return { ...state, business: action.business, verification: action.verification, records: [], extraction: null, confirmed: false, shared: false, loanPlan: null }
     case 'records/set':
       return { ...state, records: action.records }
     case 'records/extracted':
       return { ...state, extraction: action.extraction, confirmed: false }
     case 'records/confirmed':
       return { ...state, extraction: action.extraction, confirmed: true }
+    case 'loan/planned':
+      return { ...state, loanPlan: action.plan }
     case 'report/shared':
       return { ...state, shared: true }
     case 'business/reset':
-      return { ...state, business: null, verification: null, records: [], extraction: null, confirmed: false, shared: false }
+      return { ...state, business: null, verification: null, records: [], extraction: null, confirmed: false, shared: false, loanPlan: null }
     case 'investor/created':
       return { ...state, investor: action.investor, wallet: { balance: STARTING_BALANCE, starting: STARTING_BALANCE }, holdings: [], simulated: false }
     case 'investor/invested': {

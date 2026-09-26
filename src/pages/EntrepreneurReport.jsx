@@ -65,6 +65,17 @@ export default function EntrepreneurReport() {
             <div><dt>How we worked it out</dt><dd>35% of {tsh(kpis.surplus)} kept each month, times 12, capped at {tsh(level.cap)}</dd></div>
           </dl>
           <p className="note">{level.note} This is not a loan offer. A lender decides.</p>
+          {state.loanPlan && (
+            <p className="saved-plan">
+              Saved plan: <strong className="num">{tsh(state.loanPlan.amount)}</strong> over {state.loanPlan.term} months,
+              about <strong className="num">{tsh(state.loanPlan.instalment)}</strong> a month, for {state.loanPlan.purpose.toLowerCase()}.
+            </p>
+          )}
+          {level.id > 1 && (
+            <Link to="/entrepreneur/loan-plan" className="btn btn--primary">
+              {state.loanPlan ? 'Change my loan plan' : 'Plan a loan'} <Icon name="arrow" />
+            </Link>
+          )}
         </section>
 
         <section className="report-card" aria-labelledby="save-title">

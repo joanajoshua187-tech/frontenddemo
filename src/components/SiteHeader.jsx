@@ -7,6 +7,7 @@ const NAV = [
   { to: '/entrepreneur', label: 'For businesses' },
   { to: '/investor', label: 'For investors' },
   { to: '/how-it-works', label: 'How it works' },
+  { to: '/about', label: 'About' },
 ]
 
 export function SiteHeader() {
@@ -34,7 +35,7 @@ export function SiteHeader() {
               {item.label}
             </NavLink>
           ))}
-          <Link to="/start" className="btn btn--primary btn--small">Get started</Link>
+          <Link to="/" className="btn btn--primary btn--small">Get started</Link>
         </nav>
       </div>
     </header>
