@@ -1,11 +1,11 @@
-export function LogoMark({ size = 34 }) {
+export function LogoMark({ size = 36 }) {
   return (
     <svg className="logo-mark" width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-      <rect x="2" y="2" width="60" height="60" rx="16" className="logo-mark__tile" />
-      <circle cx="32" cy="32" r="17" className="logo-mark__ring" />
-      <rect x="23" y="33" width="5" height="9" rx="1.5" className="logo-mark__bar logo-mark__bar--soft" />
-      <rect x="29.5" y="28" width="5" height="14" rx="1.5" className="logo-mark__bar logo-mark__bar--mid" />
-      <rect x="36" y="22" width="5" height="20" rx="1.5" className="logo-mark__bar" />
+      <path className="logo-mark__eye" d="M5 32C11 20 21 13 32 13s21 7 27 19c-6 12-16 19-27 19S11 44 5 32z" />
+      <circle className="logo-mark__iris" cx="32" cy="32" r="12.5" />
+      <rect className="logo-mark__bar logo-mark__bar--soft" x="25.5" y="32.5" width="3.6" height="6" rx="1.2" />
+      <rect className="logo-mark__bar logo-mark__bar--mid" x="30.2" y="29" width="3.6" height="9.5" rx="1.2" />
+      <rect className="logo-mark__bar" x="34.9" y="25" width="3.6" height="13.5" rx="1.2" />
     </svg>
   )
 }
@@ -15,8 +15,8 @@ export function Logo() {
     <span className="logo">
       <LogoMark />
       <span className="logo__text">
-        <span className="logo__word">ONEKANA</span>
-        <span className="logo__sub" lang="sw">be seen</span>
+        <span className="logo__word">Onekana</span>
+        <span className="logo__sub">be seen</span>
       </span>
     </span>
   )

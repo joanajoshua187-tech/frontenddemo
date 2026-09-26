@@ -8,9 +8,9 @@ import { CashflowChart } from '../../components/CashflowChart'
 import { useSpeak } from '../../hooks/useSpeak'
 import { Icon } from '../../components/Icon'
 import { tsh } from '../../utils/format'
+import { SHARE_PARTNERS, BANK_SEES, BANK_NEVER_SEES, LENDER } from '../../data/lender'
 
 const LINKS = { finance: '/entrepreneur/app/loan', savings: '/entrepreneur/app/savings', insurance: '/entrepreneur/app/savings', investment: '/entrepreneur/app/credit' }
-const PARTNERS = ['A partner bank', 'A microfinance institution', 'An insurer', 'The community investment marketplace']
 
 function explain(profile, business, lang) {
   const c = profile.credit
@@ -28,9 +28,11 @@ export default function Overview() {
   const notify = useToast()
   const speak = useSpeak()
   const [lang, setLang] = useState('en')
-  const [partner, setPartner] = useState(PARTNERS[0])
+  const [partnerId, setPartnerId] = useState(SHARE_PARTNERS[0].id)
+  const partner = SHARE_PARTNERS.find((p) => p.id === partnerId)
   const [agree, setAgree] = useState(false)
   const ent = state.ent
+  const offer = state.lend.decisions.self
 
   if (!profile.credit) {
     return (
@@ -96,23 +98,51 @@ export default function Overview() {
         <CashflowChart months={series.months} moneyIn={series.moneyIn} moneyOut={series.moneyOut} />
       </section>
 
-      <section className="card-block" aria-labelledby="share-title">
-        <h2 id="share-title" className="h-section">Share your profile</h2>
+      <section className="card-block share" aria-labelledby="share-title">
+        <h2 id="share-title" className="h-section">Get seen by a lender</h2>
         {ent.shared ? (
-          <p className="ok-box"><Icon name="check" /> Shared. The partner sees your profile, score and the checks that passed. Never your NIDA number or original photos.</p>
+          <>
+            <p className="ok-box"><Icon name="check" /> Shared with {ent.sharedWith}. They can read your profile for 30 days, never your NIDA number or original photos.</p>
+            {offer ? (
+              <div className={`offer offer--${offer.decision}`}>
+                <p className="offer__from"><Icon name="bank" size={18} /> {LENDER.name} replied</p>
+                {offer.decision === 'offer' ? (
+                  <>
+                    <p className="offer__amount num">{tsh(offer.offer.amount)}</p>
+                    <p>over {offer.offer.months} months at {Math.round(offer.offer.rate * 100)}% a year, <strong className="num">{tsh(offer.offer.instalment)}</strong> a month.</p>
+                    {credit && <p className="muted">That is {Math.round((offer.offer.instalment / Math.max(1, credit.kpis.surplus)) * 100)}% of what your business keeps each month.</p>}
+                  </>
+                ) : (
+                  <p><strong>{offer.decision === 'info' ? 'They need a little more.' : 'Not this time.'}</strong> {offer.note}</p>
+                )}
+                {offer.decision === 'offer' && offer.note && <p className="muted">“{offer.note}”</p>}
+              </div>
+            ) : ent.sharedKind === 'bank' ? (
+              <p className="muted">Waiting for {LENDER.name}. <Link to="/lender/app">See how your profile looks on the bank’s side</Link>.</p>
+            ) : null}
+            <button type="button" className="btn btn--ghost btn--small" onClick={() => { dispatch({ type: 'ent/unshare' }); notify('Consent withdrawn. The partner can no longer see your profile.', 'info') }}>Withdraw consent</button>
+          </>
         ) : (
           <div className="share-form">
+            <p className="muted">Banks cannot lend to what they cannot see. Share your profile with one partner and they receive your verified cash flow, score and trust level.</p>
             <div className="field">
               <label htmlFor="partner">Share with</label>
-              <select id="partner" value={partner} onChange={(e) => setPartner(e.target.value)}>
-                {PARTNERS.map((p) => <option key={p}>{p}</option>)}
+              <select id="partner" value={partnerId} onChange={(e) => setPartnerId(e.target.value)}>
+                {SHARE_PARTNERS.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
               </select>
             </div>
+            <details className="sees">
+              <summary>What they will and will not see</summary>
+              <div className="two-col">
+                <ul className="plain-list">{BANK_SEES.map((t) => <li key={t}>{t}</li>)}</ul>
+                <ul className="plain-list">{BANK_NEVER_SEES.map((t) => <li key={t}>Never: {t.charAt(0).toLowerCase() + t.slice(1)}</li>)}</ul>
+              </div>
+            </details>
             <label className="check" htmlFor="share-agree">
               <input id="share-agree" type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
-              <span>I agree to share my financial profile with {partner.toLowerCase()}. I can withdraw this at any time.</span>
+              <span>I agree to share my financial profile with {partner.label.toLowerCase()} for 30 days. I can withdraw this at any time.</span>
             </label>
-            <button type="button" className="btn btn--primary" disabled={!agree} onClick={() => { dispatch({ type: 'ent/share', with: partner }); notify(`Profile shared with ${partner.toLowerCase()}.`) }}>
+            <button type="button" className="btn btn--primary" disabled={!agree} onClick={() => { dispatch({ type: 'ent/share', with: partner.label, kind: partner.kind }); notify(`Profile shared with ${partner.label}.`) }}>
               Share profile
             </button>
           </div>

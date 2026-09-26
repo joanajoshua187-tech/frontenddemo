@@ -62,7 +62,7 @@ function Detail({ listing }) {
 
   return (
     <div className="stack">
-      <Link to="/investor/app" className="back-link">Back to the marketplace</Link>
+      <Link to="/investor/app/market" className="back-link">Back to verified businesses</Link>
       <div className="flow flow--tight">
         <div className="flow__main">
           <p className="eyebrow">{listing.category} · {listing.place}{listing.sandbox ? ' · regulatory sandbox' : ''}</p>

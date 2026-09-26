@@ -80,7 +80,7 @@ export default function Portfolio() {
           )}
         </div>
         {inv.holdings.length === 0 ? (
-          <p className="empty">You have not bought any units yet. <Link to="/investor/app">Browse the marketplace</Link>.</p>
+          <p className="empty">You have not bought any units yet. <Link to="/investor/app/market">Browse verified businesses</Link>.</p>
         ) : (
           <div className="table-wrap">
             <table className="data-table">

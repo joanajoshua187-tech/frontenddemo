@@ -4,8 +4,6 @@ import { Logo } from './Logo'
 import { Icon } from './Icon'
 
 const NAV = [
-  { to: '/entrepreneur', label: 'For businesses' },
-  { to: '/investor', label: 'For investors' },
   { to: '/how-it-works', label: 'How it works' },
   { to: '/about', label: 'About' },
 ]
@@ -35,7 +33,7 @@ export function SiteHeader() {
               {item.label}
             </NavLink>
           ))}
-          <Link to="/" className="btn btn--primary btn--small">Get started</Link>
+          <Link to="/start" className="btn btn--primary btn--small">Get started <Icon name="arrow" size={16} /></Link>
         </nav>
       </div>
     </header>

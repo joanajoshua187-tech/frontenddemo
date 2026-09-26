@@ -6,6 +6,11 @@ import { SiteLayout } from './layouts/SiteLayout'
 import { EntrepreneurLayout } from './layouts/EntrepreneurLayout'
 import { InvestorLayout } from './layouts/InvestorLayout'
 import Welcome from './pages/Welcome'
+import Start from './pages/Start'
+import { LenderLayout } from './layouts/LenderLayout'
+import Applications from './pages/lender/Applications'
+import HowDataReachesYou from './pages/lender/How'
+import LenderActivity from './pages/lender/Activity'
 import About from './pages/About'
 import HowItWorks from './pages/HowItWorks'
 import Verify from './pages/entrepreneur/Verify'
@@ -16,6 +21,7 @@ import LoanPlanner from './pages/entrepreneur/LoanPlanner'
 import Savings from './pages/entrepreneur/Savings'
 import EntrepreneurActivity from './pages/entrepreneur/Activity'
 import InvestorStart from './pages/investor/Start'
+import InvestorHome from './pages/investor/Home'
 import Marketplace from './pages/investor/Marketplace'
 import ListingDetail from './pages/investor/ListingDetail'
 import Portfolio from './pages/investor/Portfolio'
@@ -37,7 +43,13 @@ export default function App() {
               <Route index element={<Welcome />} />
               <Route path="about" element={<About />} />
               <Route path="how-it-works" element={<HowItWorks />} />
-              <Route path="start" element={<Navigate to="/" replace />} />
+              <Route path="start" element={<Start />} />
+              <Route path="lender" element={<Navigate to="/lender/app" replace />} />
+              <Route path="lender/app" element={<LenderLayout />}>
+                <Route index element={<Applications />} />
+                <Route path="how" element={<HowDataReachesYou />} />
+                <Route path="activity" element={<LenderActivity />} />
+              </Route>
 
               <Route path="entrepreneur" element={<Verify />} />
               <Route path="entrepreneur/app" element={<EntrepreneurLayout />}>
@@ -51,7 +63,8 @@ export default function App() {
 
               <Route path="investor" element={<InvestorStart />} />
               <Route path="investor/app" element={<InvestorLayout />}>
-                <Route index element={<Marketplace />} />
+                <Route index element={<InvestorHome />} />
+                <Route path="market" element={<Marketplace />} />
                 <Route path="listing/:id" element={<ListingDetail />} />
                 <Route path="portfolio" element={<Portfolio />} />
                 <Route path="learn" element={<Learn />} />

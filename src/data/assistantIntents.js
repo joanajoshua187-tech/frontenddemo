@@ -15,6 +15,7 @@ export const GREETING = {
 
 const APP = '/entrepreneur/app'
 const INV = '/investor/app'
+const MARKET = '/investor/app/market'
 
 export function respond(raw, lang, ctx) {
   const text = raw.toLowerCase().trim()
@@ -35,6 +36,13 @@ export function respond(raw, lang, ctx) {
       `Mistari ${ctx.pending} inasubiri jibu lako. Nakala inayowezekana ni kiasi kilekile siku moja katika sehemu mbili. Niambie kama ni mauzo moja au mawili.`,
       `${APP}/records`,
     )
+  }
+  if (has(text, ['offer', 'lender', 'ofa', 'mkopeshaji', 'bank see', 'benki inaona', 'share with'])) {
+    if (!ctx.verified) return needBusiness()
+    if (!ctx.shared) return say('Your profile is private. On your profile page, choose Partner Bank and press Share. The bank sees your verified cash flow, score and trust level, never your NIDA number or photos.', 'Wasifu wako ni wa siri. Kwenye ukurasa wa wasifu, chagua benki na ubonyeze Shiriki. Benki inaona mapato yaliyothibitishwa, alama na uaminifu, si namba ya NIDA wala picha.', APP)
+    if (!ctx.offer) return say(`Your profile is with ${ctx.sharedWith}. They have not replied yet.`, `Wasifu wako uko kwa ${ctx.sharedWith}. Bado hawajajibu.`, APP)
+    if (ctx.offer.decision === 'offer') return say(`Good news. The bank offers ${tsh(ctx.offer.offer.amount)} over ${ctx.offer.offer.months} months, about ${tsh(ctx.offer.offer.instalment)} a month.`, `Habari njema. Benki inatoa ${tsh(ctx.offer.offer.amount)} kwa miezi ${ctx.offer.offer.months}, takriban ${tsh(ctx.offer.offer.instalment)} kwa mwezi.`, APP)
+    return say(`The bank replied: ${ctx.offer.note}`, `Benki imejibu: ${ctx.offer.note}`, APP)
   }
   if (has(text, ['trust', 'uaminifu', 'streak', 'consisten'])) {
     if (!ctx.verified) return needBusiness()
@@ -104,7 +112,7 @@ export function respond(raw, lang, ctx) {
     return say(`You have finished ${ctx.lessonsDone} of 5 lessons. Some opportunities unlock only after the lessons.`, `Umemaliza masomo ${ctx.lessonsDone} kati ya 5. Fursa nyingine zinafunguka baada ya masomo.`, `${INV}/learn`)
   }
   if (has(text, ['invest', 'wekeza', 'uwekezaji', 'mwekezaji', 'market', 'soko'])) {
-    if (ctx.investor) return say('Here is the marketplace. I can show you opportunities, but I never buy anything for you by voice.', 'Hili ni soko. Naweza kukuonyesha fursa, lakini sinunui chochote kwa sauti.', INV)
+    if (ctx.investor) return say('Here are the verified businesses. I can show you opportunities, but I never buy anything for you by voice.', 'Hizi ni biashara zilizohakikiwa. Naweza kukuonyesha fursa, lakini sinunui chochote kwa sauti.', MARKET)
     return say('Open a demo account and you get one million shillings of practice money. It is not real money.', 'Fungua akaunti ya majaribio upate shilingi milioni moja za mazoezi. Si pesa halisi.', '/investor')
   }
   if (has(text, ['verify', 'register', 'business', 'entrepreneur', 'hakiki', 'thibitisha', 'sajili', 'biashara', 'mjasiriamali'])) {

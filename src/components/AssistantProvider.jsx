@@ -35,8 +35,11 @@ export function AssistantProvider({ children }) {
       balance: state.inv.wallet.balance,
       holdings: state.inv.holdings.length,
       lessonsDone: state.inv.lessonsDone.length,
+      shared: state.ent.shared,
+      sharedWith: state.ent.sharedWith,
+      offer: state.lend.decisions.self,
     }),
-    [state.ent, state.inv, profile],
+    [state.ent, state.inv, state.lend, profile],
   )
 
   useEffect(() => {

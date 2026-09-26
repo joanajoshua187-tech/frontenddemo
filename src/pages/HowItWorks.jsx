@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { SCORE_LEVELS } from '../utils/scoring'
 import { tsh } from '../utils/format'
+import { Estimator } from '../components/Estimator'
 
 const FACTORS = [
   ['Starting point', 'Every business', '25'],
@@ -108,8 +109,14 @@ export default function HowItWorks() {
         </ol>
       </section>
 
+      <section className="prose-block prose-block--wide">
+        <h2>Try your own numbers</h2>
+        <p>Move the sliders to see roughly where a business would land. Nothing here is saved or sent.</p>
+        <Estimator />
+      </section>
+
       <div className="page__actions">
-        <Link to="/entrepreneur" className="btn btn--primary">Verify my business</Link>
+        <Link to="/start" className="btn btn--primary">Get started</Link>
         <Link to="/investor" className="btn btn--ghost">Open a demo account</Link>
       </div>
     </article>

@@ -8,9 +8,10 @@ import { findDuplicate } from '../utils/profile'
 const EMPTY_CONNECTIONS = { mpesa: 'available', airtel: 'available', mixx: 'available', halopesa: 'available', bank: 'available' }
 
 const emptyEnt = { business: null, verification: null, demo: false, transactions: [], uploads: [], imageHashes: [], connections: EMPTY_CONNECTIONS, loanPlan: null, shared: false, log: [] }
-const emptyInv = { investor: null, wallet: { balance: STARTING_BALANCE, starting: STARTING_BALANCE }, holdings: [], simulated: false, lessonsDone: [], log: [] }
+const emptyInv = { investor: null, wallet: { balance: STARTING_BALANCE, starting: STARTING_BALANCE }, walletTx: [], holdings: [], simulated: false, lessonsDone: [], log: [] }
+const emptyLend = { decisions: {}, log: [] }
 
-const initialState = { ent: emptyEnt, inv: emptyInv }
+const initialState = { ent: emptyEnt, inv: emptyInv, lend: emptyLend }
 
 let counter = 0
 function nextId(prefix) {
@@ -124,7 +125,16 @@ function entReducer(ent, action) {
     case 'ent/loanPlan':
       return { ...ent, loanPlan: action.plan, log: appendEntry(ent.log, { action: 'Loan plan saved', detail: `${action.plan.amount.toLocaleString('en-US')} over ${action.plan.months} months, ${Math.round(action.plan.payment).toLocaleString('en-US')} a month` }) }
     case 'ent/share':
-      return { ...ent, shared: true, log: appendEntry(ent.log, { action: 'Profile shared', detail: `Shared with ${action.with} after owner consent` }) }
+      return {
+        ...ent,
+        shared: true,
+        sharedWith: action.with,
+        sharedKind: action.kind ?? 'bank',
+        sharedAt: new Date().toISOString(),
+        log: appendEntry(ent.log, { action: 'Profile shared', detail: `Shared with ${action.with} after owner consent. Read-only access for 30 days.` }),
+      }
+    case 'ent/unshare':
+      return { ...ent, shared: false, log: appendEntry(ent.log, { action: 'Consent withdrawn', detail: `${ent.sharedWith} can no longer see the profile` }) }
     case 'ent/saving':
       return {
         ...ent,
@@ -145,6 +155,7 @@ function invReducer(inv, action) {
       return {
         ...emptyInv,
         investor: { ...action.investor, maxShare: profile.maxShare },
+        walletTx: [{ id: 'w1', at: new Date().toISOString(), label: 'Demo money received', amount: STARTING_BALANCE, balance: STARTING_BALANCE }],
         log: appendEntry([], { action: 'Demo account opened', detail: `${action.investor.displayName}, ${action.investor.riskProfile} profile, TSh ${STARTING_BALANCE.toLocaleString('en-US')} demo wallet` }),
       }
     }
@@ -159,6 +170,7 @@ function invReducer(inv, action) {
         ...inv,
         holdings,
         wallet: { ...inv.wallet, balance: inv.wallet.balance - cost },
+        walletTx: [...inv.walletTx, { id: `w${inv.walletTx.length + 1}`, at: new Date().toISOString(), label: `${action.units} units of ${listing.name}`, amount: -cost, balance: inv.wallet.balance - cost }],
         log: appendEntry(inv.log, { action: 'Units bought', detail: `${action.units} units of ${listing.name} for TSh ${cost.toLocaleString('en-US')}` }),
       }
     }
@@ -174,7 +186,33 @@ function invReducer(inv, action) {
   }
 }
 
+function lendReducer(lend, action) {
+  switch (action.type) {
+    case 'lend/decide':
+      return {
+        decisions: { ...lend.decisions, [action.id]: { decision: action.decision, offer: action.offer ?? null, note: action.note ?? '', at: new Date().toISOString() } },
+        log: appendEntry(lend.log, { action: action.decision === 'offer' ? 'Offer made' : action.decision === 'info' ? 'More information requested' : 'Application declined', detail: `${action.business}${action.offer ? `: TSh ${action.offer.amount.toLocaleString('en-US')} over ${action.offer.months} months` : ''}${action.note ? `. Note: ${action.note}` : ''}` }),
+      }
+    case 'lend/viewed':
+      if (lend.log.some((e) => e.action === 'Profile opened' && e.detail === action.business)) return lend
+      return { ...lend, log: appendEntry(lend.log, { action: 'Profile opened', detail: action.business }) }
+    case 'lend/undo': {
+      const decisions = { ...lend.decisions }
+      delete decisions[action.id]
+      return { decisions, log: appendEntry(lend.log, { action: 'Decision reopened', detail: action.business }) }
+    }
+    default:
+      return lend
+  }
+}
+
 function reducer(state, action) {
+  if (action.type.startsWith('lend/')) return { ...state, lend: lendReducer(state.lend, action) }
+  if (action.type === 'ent/reset' || action.type === 'ent/unshare') {
+    const decisions = { ...state.lend.decisions }
+    delete decisions.self
+    return { ...state, ent: entReducer(state.ent, action), lend: { ...state.lend, decisions } }
+  }
   if (action.type.startsWith('ent/')) return { ...state, ent: entReducer(state.ent, action) }
   if (action.type.startsWith('inv/')) return { ...state, inv: invReducer(state.inv, action) }
   return state
