@@ -15,7 +15,7 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <div className="site-header__inner">
-        <Link to="/" className="site-header__brand" aria-label="Mizani home">
+        <Link to="/" className="site-header__brand" aria-label="Africa Credit OS home">
           <Logo />
         </Link>
         <button

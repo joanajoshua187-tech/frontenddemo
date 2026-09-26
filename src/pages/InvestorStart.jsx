@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAppState } from '../hooks/useAppState'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { useToast } from '../hooks/useToast'
 import { TextField, CheckboxField, ChoiceGroup } from '../components/Fields'
 import { DemoNotice } from '../components/DemoNotice'
 import { validateInvestor } from '../utils/validators'
@@ -24,6 +25,7 @@ const GOALS = [
 export default function InvestorStart() {
   useDocumentTitle('Open a demo account')
   const { state, dispatch } = useAppState()
+  const notify = useToast()
   const navigate = useNavigate()
   const [form, setForm] = useState({ displayName: '', experience: '', goal: '', consent: false })
   const [errors, setErrors] = useState({})
@@ -44,6 +46,7 @@ export default function InvestorStart() {
       type: 'investor/created',
       investor: { displayName: cleanText(form.displayName.trim()), experience: form.experience, goal: form.goal },
     })
+    notify('Demo account ready. You have TSh 1,000,000 to practise with.')
     navigate('/investor/dashboard')
   }
 
@@ -72,7 +75,7 @@ export default function InvestorStart() {
             <div><dt>We ask</dt><dd>A name to greet you, your experience and your first learning goal.</dd></div>
             <div><dt>We never ask</dt><dd>Your NIDA number, bank details, mobile money PIN or card.</dd></div>
           </dl>
-          <p className="note">If anyone asks for your PIN in the name of Mizani, it is a scam.</p>
+          <p className="note">If anyone asks for your PIN in the name of Africa Credit OS, it is a scam.</p>
         </aside>
       </div>
     </section>

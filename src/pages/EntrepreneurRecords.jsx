@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppState } from '../hooks/useAppState'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { useToast } from '../hooks/useToast'
 import { Stepper } from '../components/Stepper'
 import { DemoNotice } from '../components/DemoNotice'
 import { Icon } from '../components/Icon'
@@ -19,6 +20,7 @@ const KINDS = [
 export default function EntrepreneurRecords() {
   useDocumentTitle('Upload records')
   const { state, dispatch } = useAppState()
+  const notify = useToast()
   const navigate = useNavigate()
   const inputRef = useRef(null)
   const [files, setFiles] = useState([])
@@ -76,6 +78,7 @@ export default function EntrepreneurRecords() {
     try {
       const extraction = await analyseRecords(files, setStage)
       dispatch({ type: 'records/extracted', extraction })
+      notify(`${extraction.linesRead} lines read. Check the flagged ones.`)
       setRows(extraction.rows)
     } catch (error) {
       setFailure(error.message)
@@ -97,6 +100,7 @@ export default function EntrepreneurRecords() {
 
   function confirm() {
     dispatch({ type: 'records/confirmed', extraction: { ...state.extraction, rows } })
+    notify('Records confirmed. Your report is ready.')
     navigate('/entrepreneur/report')
   }
 
@@ -121,7 +125,7 @@ export default function EntrepreneurRecords() {
           >
             <Icon name="upload" size={28} />
             <p><strong>Drag images here</strong> or choose them from your phone or computer.</p>
-            <button type="button" className="btn btn--dark" onClick={() => inputRef.current?.click()}>Choose images</button>
+            <button type="button" className="btn btn--secondary" onClick={() => inputRef.current?.click()}>Choose images</button>
             <input
               ref={inputRef}
               id="record-files"
@@ -199,7 +203,7 @@ export default function EntrepreneurRecords() {
                         <div className="flag-box">
                           <p>This may be the same payment as the mobile money line on {r.date}.</p>
                           <div className="actions actions--tight">
-                            <button type="button" className="btn btn--dark btn--small" onClick={() => removeRow(r.id)}>Same payment, remove</button>
+                            <button type="button" className="btn btn--secondary btn--small" onClick={() => removeRow(r.id)}>Same payment, remove</button>
                             <button type="button" className="btn btn--ghost btn--small" onClick={() => resolveRow(r.id, { confidence: 1 })}>Different sale, keep</button>
                           </div>
                         </div>
@@ -246,7 +250,7 @@ function UnclearFix({ row, onConfirm }) {
       <div className="actions actions--tight">
         <label htmlFor={id} className="visually-hidden">Correct amount</label>
         <input id={id} type="number" inputMode="numeric" step="1000" value={value} onChange={(e) => setValue(e.target.value)} aria-invalid={Boolean(error)} />
-        <button type="button" className="btn btn--dark btn--small" onClick={submit}>Confirm amount</button>
+        <button type="button" className="btn btn--secondary btn--small" onClick={submit}>Confirm amount</button>
       </div>
       {error && <p className="field__error" role="alert">{error}</p>}
     </div>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAppState } from '../hooks/useAppState'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { useToast } from '../hooks/useToast'
 import { findListing, CONCENTRATION_LIMIT } from '../data/listings'
 import { validateAmount } from '../utils/validators'
 import { tsh, plain } from '../utils/format'
@@ -20,6 +21,7 @@ export default function InvestorListing() {
 
 function ListingView({ listing }) {
   const { state, dispatch } = useAppState()
+  const notify = useToast()
   const navigate = useNavigate()
   const [amount, setAmount] = useState(String(listing.minimum))
   const [error, setError] = useState('')
@@ -31,6 +33,12 @@ function ListingView({ listing }) {
   const share = (held + Number(amount || 0)) / state.wallet.starting
   const concentrated = share > CONCENTRATION_LIMIT
   const understood = answer === 'no'
+  const [low, high] = (listing.returnRange.match(/\d+/g) || [0, 0]).map(Number)
+  const sliderMax = Math.max(listing.minimum, Math.min(state.wallet.balance, 500000))
+  const numeric = Number(amount) || 0
+  const years = listing.lockMonths / 12
+  const lowBack = numeric * (1 + (low / 100) * years)
+  const highBack = numeric * (1 + (high / 100) * years)
 
   function review(event) {
     event.preventDefault()
@@ -50,6 +58,7 @@ function ListingView({ listing }) {
 
   function confirm() {
     dispatch({ type: 'investor/invested', listingId: listing.id, amount: Number(amount), at: new Date().toISOString() })
+    notify(`You invested ${tsh(amount)} of demo money in ${listing.name}.`)
     navigate('/investor/dashboard')
   }
 
@@ -66,7 +75,7 @@ function ListingView({ listing }) {
             <div><dt>Raising</dt><dd className="num">{tsh(listing.raising)}</dd></div>
             <div><dt>Raised so far</dt><dd className="num">{tsh(listing.raised)}</dd></div>
             <div><dt>Money locked for</dt><dd className="num">{listing.lockMonths} months</dd></div>
-            <div><dt>Mizani score</dt><dd className="num">{listing.score} / 100</dd></div>
+            <div><dt>Readiness score</dt><dd className="num">{listing.score} / 100</dd></div>
           </dl>
 
           <section className="detail-block">
@@ -111,6 +120,31 @@ function ListingView({ listing }) {
                   <button key={q} type="button" className={`chip-button ${Number(amount) === q ? 'is-selected' : ''}`} onClick={() => { setAmount(String(q)); setError('') }}>{plain(q)}</button>
                 ))}
               </div>
+
+              <div className="slider">
+                <label htmlFor="amount-slider" className="visually-hidden">Choose an amount</label>
+                <input
+                  id="amount-slider"
+                  type="range"
+                  min={listing.minimum}
+                  max={sliderMax}
+                  step={5000}
+                  value={Math.min(Math.max(numeric, listing.minimum), sliderMax)}
+                  onChange={(e) => { setAmount(e.target.value); setError('') }}
+                  style={{ '--fill': `${((Math.min(Math.max(numeric, listing.minimum), sliderMax) - listing.minimum) / Math.max(1, sliderMax - listing.minimum)) * 100}%` }}
+                />
+              </div>
+
+              {numeric >= listing.minimum && (
+                <div className="projection" aria-live="polite">
+                  <p className="projection__title">After {listing.lockMonths} months, if this business does as well as similar ones</p>
+                  <div className="projection__bars">
+                    <div><span>Lower end</span><strong className="num">{tsh(lowBack)}</strong></div>
+                    <div><span>Higher end</span><strong className="num">{tsh(highBack)}</strong></div>
+                  </div>
+                  <p className="projection__warn">It could also be less than {tsh(numeric)}, or nothing if the business fails.</p>
+                </div>
+              )}
 
               <fieldset className="choice-group">
                 <legend>Can you take this money out before {listing.lockMonths} months?</legend>

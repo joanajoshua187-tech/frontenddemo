@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { LedgerPage } from '../components/LedgerPage'
 import { ScoreDial } from '../components/ScoreDial'
 import { Icon } from '../components/Icon'
+import { Estimator } from '../components/Estimator'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const STEPS = [
@@ -19,8 +20,8 @@ const CHECKS = [
 ]
 
 const FAQ = [
-  { q: 'Is the Mizani score the same as a credit bureau score?', a: 'No. It is a readiness score built only from the records you upload. A lender may look at it alongside a credit reference bureau report and its own checks.' },
-  { q: 'My business is not registered yet. Can I still use Mizani?', a: 'You need a registered business to get a report. Register your business name with BRELA and get a TIN from TRA, then come back with those numbers.' },
+  { q: 'Is the credit readiness score the same as a credit bureau score?', a: 'No. It is a readiness score built only from the records you upload. A lender may look at it alongside a credit reference bureau report and its own checks.' },
+  { q: 'My business is not registered yet. Can I still use Africa Credit OS?', a: 'You need a registered business to get a report. Register your business name with BRELA and get a TIN from TRA, then come back with those numbers.' },
   { q: 'Which records give the best result?', a: 'Clear photos of every ledger page, one page per photo, and mobile money statement screenshots for the same months. More months give a steadier score.' },
   { q: 'Is the investor money real?', a: 'No. Every investor account gets TSh 1,000,000 in demo money. It has no cash value and cannot be withdrawn. It exists so you can practise before risking your own savings.' },
   { q: 'Who sees my records?', a: 'Only you. A lender sees your report only after you press Share, and never your NIDA number.' },
@@ -34,7 +35,7 @@ export default function Home() {
         <div className="hero__copy">
           <h1 className="hero__title">Your ledger book already proves your business works.</h1>
           <p className="hero__lede">
-            Mizani checks that your business is registered, reads photos of your ledger and your mobile money screenshots,
+            Africa Credit OS checks that your business is registered, reads photos of your ledger and your mobile money screenshots,
             and gives you a report with a credit score, a loan level and a savings plan you can keep to.
           </p>
           <div className="hero__actions">
@@ -100,7 +101,7 @@ export default function Home() {
                 </ul>
               </div>
             </div>
-            <Link to="/investor" className="btn btn--light">Open a demo account</Link>
+            <Link to="/investor" className="btn btn--primary">Open a demo account</Link>
           </article>
         </div>
       </section>
@@ -116,6 +117,14 @@ export default function Home() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="section estimate" aria-labelledby="estimate-title">
+        <div className="estimate__intro">
+          <h2 id="estimate-title" className="section__title">Try your own numbers</h2>
+          <p>Move the sliders to see roughly where your business would land. Nothing you enter here is saved or sent anywhere.</p>
+        </div>
+        <Estimator />
       </section>
 
       <section className="section checks" aria-labelledby="checks-title">
@@ -144,7 +153,7 @@ export default function Home() {
           <Link to="/how-it-works" className="text-link">See how the score is calculated <Icon name="arrow" size={16} /></Link>
         </div>
         <div className="sample__card">
-          <ScoreDial score={74} caption="Mizani score for Amina Tailoring" />
+          <ScoreDial score={74} caption="Credit readiness score for Amina Tailoring" />
           <dl className="sample__facts">
             <div><dt>Loan level</dt><dd>Level 3, Growth</dd></div>
             <div><dt>Indicative amount</dt><dd className="num">TSh 1,800,000</dd></div>
@@ -179,8 +188,8 @@ export default function Home() {
       <section className="closing">
         <h2>Bring this month’s ledger. Leave with a report.</h2>
         <div className="closing__actions">
-          <Link to="/entrepreneur" className="btn btn--light btn--large">Get my business report</Link>
-          <Link to="/investor" className="btn btn--outline-light btn--large">Practise investing</Link>
+          <Link to="/entrepreneur" className="btn btn--primary btn--large">Get my business report</Link>
+          <Link to="/investor" className="btn btn--ghost btn--large">Practise investing</Link>
         </div>
       </section>
     </>

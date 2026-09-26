@@ -1,6 +1,7 @@
 import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom'
 import { env } from './config/env'
 import { AppStateProvider } from './context/AppStateProvider'
+import { ToastProvider } from './context/ToastProvider'
 import { SiteLayout } from './layouts/SiteLayout'
 import { RequireInvestor, RequireReport, RequireVerified } from './components/Guards'
 import Home from './pages/Home'
@@ -21,6 +22,7 @@ const Router = env.routerMode === 'hash' ? HashRouter : BrowserRouter
 export default function App() {
   return (
     <AppStateProvider>
+      <ToastProvider>
       <Router>
         <Routes>
           <Route element={<SiteLayout />}>
@@ -40,6 +42,7 @@ export default function App() {
           </Route>
         </Routes>
       </Router>
+      </ToastProvider>
     </AppStateProvider>
   )
 }

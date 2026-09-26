@@ -1,7 +1,7 @@
 export const brand = {
-  name: 'Mizani',
-  meaning: 'Swahili for a balance or a pair of scales',
-  tagline: 'Business records, weighed fairly.',
+  name: 'Africa Credit OS',
+  shortName: 'ACOS',
+  tagline: 'Everyday business records, turned into credit evidence.',
   legalName: '[Company legal name]',
   contactEmail: '[contact email]',
   address: 'Dar es Salaam, Tanzania',

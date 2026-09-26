@@ -1,10 +1,10 @@
-export function LogoMark({ size = 32 }) {
+export function LogoMark({ size = 34 }) {
   return (
     <svg className="logo-mark" width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-      <rect width="64" height="64" rx="14" className="logo-mark__tile" />
-      <path d="M14 20h36M32 16v32M22 48h20" className="logo-mark__line" strokeWidth="4" />
-      <path d="M10 34l6-14 6 14zM42 34l6-14 6 14z" className="logo-mark__pan" strokeWidth="3" />
-      <path d="M9 34h14M41 34h14" className="logo-mark__line" strokeWidth="3" />
+      <rect x="2" y="2" width="60" height="60" rx="14" className="logo-mark__tile" />
+      <rect x="15" y="34" width="8" height="16" rx="2" className="logo-mark__bar logo-mark__bar--soft" />
+      <rect x="28" y="25" width="8" height="25" rx="2" className="logo-mark__bar logo-mark__bar--mid" />
+      <rect x="41" y="14" width="8" height="36" rx="2" className="logo-mark__bar" />
     </svg>
   )
 }
@@ -13,7 +13,9 @@ export function Logo() {
   return (
     <span className="logo">
       <LogoMark />
-      <span className="logo__word">Mizani</span>
+      <span className="logo__word">
+        Africa Credit <span className="logo__os">OS</span>
+      </span>
     </span>
   )
 }

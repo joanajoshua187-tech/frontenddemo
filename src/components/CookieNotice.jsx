@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const KEY = 'mizani-cookie-notice'
+const KEY = 'acos-cookie-notice'
 
 function readDismissed() {
   try {
@@ -31,7 +31,7 @@ export function CookieNotice() {
         We use two cookies that keep you signed in and protect our forms. No tracking or advertising cookies.{' '}
         <Link to="/cookies">Read the cookie policy</Link>.
       </p>
-      <button type="button" className="btn btn--dark btn--small" onClick={dismiss}>
+      <button type="button" className="btn btn--secondary btn--small" onClick={dismiss}>
         Understood
       </button>
     </section>

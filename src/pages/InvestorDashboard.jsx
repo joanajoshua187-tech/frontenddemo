@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppState } from '../hooks/useAppState'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { useToast } from '../hooks/useToast'
 import { listings, findListing, SECTOR_FILTERS, RISK_LEVELS } from '../data/listings'
 import { lessons, suggestionsFor } from '../data/lessons'
 import { tsh, signedPercent } from '../utils/format'
@@ -10,6 +11,7 @@ import { Icon } from '../components/Icon'
 export default function InvestorDashboard() {
   useDocumentTitle('Investor dashboard')
   const { state, dispatch } = useAppState()
+  const notify = useToast()
   const [sector, setSector] = useState('All sectors')
   const [risk, setRisk] = useState('Any risk')
 
@@ -40,7 +42,7 @@ export default function InvestorDashboard() {
           <p className="report-head__kicker">Demo investor account</p>
           <h1 className="page__title">Karibu, {state.investor.displayName}</h1>
         </div>
-        <button type="button" className="btn btn--ghost btn--small" onClick={() => dispatch({ type: 'investor/reset' })}>Start again with a fresh wallet</button>
+        <button type="button" className="btn btn--ghost btn--small" onClick={() => { dispatch({ type: 'investor/reset' }); notify('Demo account closed. Start a new one any time.', 'info') }}>Start again with a fresh wallet</button>
       </header>
 
       <div className="wallet">
@@ -80,7 +82,7 @@ export default function InvestorDashboard() {
         <div className="section-block__head">
           <h2 id="holdings-title">Your investments</h2>
           {state.holdings.length > 0 && !state.simulated && (
-            <button type="button" className="btn btn--dark btn--small" onClick={() => dispatch({ type: 'investor/simulated' })}>Move time forward 6 months</button>
+            <button type="button" className="btn btn--secondary btn--small" onClick={() => { dispatch({ type: 'investor/simulated' }); notify('Six months have passed. See how each business did.', 'info') }}>Move time forward 6 months</button>
           )}
         </div>
         {state.holdings.length === 0 ? (

@@ -3,17 +3,20 @@ import { Link } from 'react-router-dom'
 import { useAppState } from '../hooks/useAppState'
 import { useAssessment } from '../hooks/useAssessment'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { useToast } from '../hooks/useToast'
 import { Stepper } from '../components/Stepper'
 import { ScoreDial } from '../components/ScoreDial'
 import { CashflowChart } from '../components/CashflowChart'
 import { RichText } from '../components/RichText'
 import { Icon } from '../components/Icon'
+import { WhatIf } from '../components/WhatIf'
 import { FLOW_STEPS } from '../data/flow'
 import { tsh, percent } from '../utils/format'
 
 export default function EntrepreneurReport() {
   useDocumentTitle('Business report')
   const { state, dispatch } = useAppState()
+  const notify = useToast()
   const report = useAssessment()
   const [sharing, setSharing] = useState(false)
   const [agree, setAgree] = useState(false)
@@ -40,7 +43,7 @@ export default function EntrepreneurReport() {
 
       <div className="report-grid">
         <section className="report-card report-card--score" aria-labelledby="score-title">
-          <h2 id="score-title" className="report-card__title">Mizani score</h2>
+          <h2 id="score-title" className="report-card__title">Credit readiness score</h2>
           <ScoreDial score={report.score} caption={`${level.name}, ${level.label}`} />
           <ul className="factor-list">
             {report.factors.map((f) => (
@@ -104,6 +107,19 @@ export default function EntrepreneurReport() {
         </section>
       </div>
 
+      <WhatIf
+        base={report}
+        inputs={{
+          months: report.months,
+          moneyIn: report.moneyIn,
+          moneyOut: report.moneyOut,
+          verifiedShare: state.extraction.verifiedShare,
+          registered: state.verification?.status === 'verified',
+          mixedMoney: state.extraction.mixedMoney,
+          savingsFound: state.extraction.savingsFound,
+        }}
+      />
+
       <section className="share-panel" aria-labelledby="share-title">
         <h2 id="share-title">Share with a lender</h2>
         {state.shared ? (
@@ -115,14 +131,14 @@ export default function EntrepreneurReport() {
               <span>I agree to share this report with the lender I choose. I can withdraw this at any time.</span>
             </label>
             <div className="actions">
-              <button type="button" className="btn btn--primary" disabled={!agree} onClick={() => dispatch({ type: 'report/shared' })}>Share report</button>
+              <button type="button" className="btn btn--primary" disabled={!agree} onClick={() => { dispatch({ type: 'report/shared' }); notify('Report shared with the lender.') }}>Share report</button>
               <button type="button" className="btn btn--ghost" onClick={() => setSharing(false)}>Cancel</button>
             </div>
           </div>
         ) : (
           <div className="actions">
             <p>Nothing leaves your account until you choose to share it.</p>
-            <button type="button" className="btn btn--dark" onClick={() => setSharing(true)}>Share this report</button>
+            <button type="button" className="btn btn--secondary" onClick={() => setSharing(true)}>Share this report</button>
           </div>
         )}
       </section>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppState } from '../hooks/useAppState'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { useToast } from '../hooks/useToast'
 import { Stepper } from '../components/Stepper'
 import { TextField, SelectField, CheckboxField } from '../components/Fields'
 import { DemoNotice } from '../components/DemoNotice'
@@ -17,6 +18,7 @@ const EMPTY = { businessName: '', tin: '', nida: '', licence: '', sector: '', re
 export default function EntrepreneurVerify() {
   useDocumentTitle('Verify your business')
   const { state, dispatch } = useAppState()
+  const notify = useToast()
   const navigate = useNavigate()
   const [form, setForm] = useState(EMPTY)
   const [errors, setErrors] = useState({})
@@ -53,6 +55,7 @@ export default function EntrepreneurVerify() {
         region: form.region,
       }
       dispatch({ type: 'business/verified', business, verification })
+      notify(`${business.businessName} is verified.`)
       setForm(EMPTY)
     } catch (error) {
       setFailure(error.message)
@@ -110,7 +113,7 @@ export default function EntrepreneurVerify() {
                 <SelectField id="region" label="Region" placeholder="Choose a region" options={REGIONS} value={form.region} onChange={update('region')} error={errors.region} />
               </div>
               <CheckboxField id="consent" checked={form.consent} onChange={update('consent')} error={errors.consent}>
-                I agree that Mizani may check these details with BRELA, TRA, NIDA and the licensing authority. I have read the <Link to="/privacy">privacy policy</Link>.
+                I agree that Africa Credit OS may check these details with BRELA, TRA, NIDA and the licensing authority. I have read the <Link to="/privacy">privacy policy</Link>.
               </CheckboxField>
               {failure && <p className="form__failure" role="alert">{failure}</p>}
               <div className="actions">

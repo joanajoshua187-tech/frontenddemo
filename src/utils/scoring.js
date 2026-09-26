@@ -41,10 +41,10 @@ export function assessBusiness({ months, moneyIn, moneyOut, verifiedShare, regis
 
   const score = Math.max(0, Math.min(100, factors.reduce((sum, f) => sum + f.points, 0)))
   const level = [...SCORE_LEVELS].reverse().find((l) => score >= l.min)
-  const monthlyRepayment = roundDown(surplus * REPAYMENT_SHARE, 1000)
-  const indicativeLoan = Math.min(level.cap, roundDown(monthlyRepayment * 12, 50000))
+  const monthlyRepayment = Math.max(0, roundDown(surplus * REPAYMENT_SHARE, 1000))
+  const indicativeLoan = Math.max(0, Math.min(level.cap, roundDown(monthlyRepayment * 12, 50000)))
 
-  const monthlySaving = roundDown(surplus * SAVINGS_SHARE, 5000)
+  const monthlySaving = Math.max(0, roundDown(surplus * SAVINGS_SHARE, 5000))
   const emergencyTarget = roundDown(avgOut * 2, 50000)
 
   const trust = verifiedShare >= 0.6 ? 'High' : verifiedShare >= 0.3 ? 'Medium' : 'Low'
@@ -64,4 +64,26 @@ export function assessBusiness({ months, moneyIn, moneyOut, verifiedShare, regis
     trust: { label: trust, share: verifiedShare },
     kpis: { avgIn, avgOut, surplus, margin, cv },
   }
+}
+
+export const STEADINESS = {
+  steady: { label: 'Steady', spread: 0.08 },
+  mixed: { label: 'Some ups and downs', spread: 0.16 },
+  uneven: { label: 'Very uneven', spread: 0.32 },
+}
+
+export function estimateFromTotals({ sales, costs, months, steadiness, registered, mobileShare, separate, saves }) {
+  const spread = STEADINESS[steadiness]?.spread ?? 0.16
+  const labels = Array.from({ length: months }, (_, i) => `M${i + 1}`)
+  const moneyIn = labels.map((_, i) => Math.max(1, sales * (1 + (i % 2 === 0 ? -spread : spread))))
+  const moneyOut = labels.map(() => costs)
+  return assessBusiness({
+    months: labels,
+    moneyIn,
+    moneyOut,
+    verifiedShare: mobileShare,
+    registered,
+    mixedMoney: !separate,
+    savingsFound: saves,
+  })
 }

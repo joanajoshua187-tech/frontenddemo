@@ -18,8 +18,8 @@ export default function HowItWorks() {
   useDocumentTitle('How it works')
   return (
     <article className="page">
-      <h1 className="page__title">How Mizani works</h1>
-      <p className="page__lede">Nothing in a Mizani report is a black box. This page shows every rule we use, so you can check your own report by hand.</p>
+      <h1 className="page__title">How Africa Credit OS works</h1>
+      <p className="page__lede">Nothing in an Africa Credit OS report is a black box. This page shows every rule we use, so you can check your own report by hand.</p>
 
       <section className="prose-block">
         <h2>For business owners</h2>
