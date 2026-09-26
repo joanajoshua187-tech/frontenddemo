@@ -1,0 +1,16 @@
+node_modules
+dist
+dist-artifact
+coverage
+*.log
+npm-debug.log*
+.DS_Store
+.env
+.env.local
+.env.*.local
+*.md
+**/*.md
+seed
+seeds
+**/*.seed.js
+**/*.seed.json

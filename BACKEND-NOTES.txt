@@ -1,0 +1,33 @@
+# Mizani frontend
+
+React and React Router frontend for Mizani. Entrepreneurs verify a registered business, upload ledger photos and mobile money screenshots, and get a report with a score, a loan level and savings advice. Investors open a demo account and practise with demo money on verified listings.
+
+## Run
+
+npm install
+npm run dev
+
+## Build
+
+npm run build            production build with browser routing
+npm run build:artifact   static build with hash routing and relative paths
+
+## Modes
+
+VITE_DEMO_MODE=true      services return simulated results, no network calls
+VITE_DEMO_MODE=false     services call the API at VITE_API_URL
+
+## Backend responsibilities
+
+The frontend cannot enforce these. The Express API must:
+
+- Verify BRELA, TRA, NIDA and licence details server side. Delete the NIDA number after the check.
+- Validate every request with Zod or Joi and cap bodies with express.json({ limit: '10kb' }).
+- Issue the XSRF-TOKEN cookie read by src/services/apiClient.js and check X-CSRF-Token on every write.
+- Use helmet with a strict Content-Security-Policy, HTTPS only, Cache-Control: no-store.
+- Session cookies: Secure, HttpOnly, SameSite=Strict. Short-lived access tokens, refresh tokens in httpOnly cookies, revoke on logout.
+- Rate limit sign-in, verification and upload routes with express-rate-limit.
+- Uploads: check magic bytes again, limit size, rename, store in object storage outside the web root.
+- Hash passwords with argon2 or bcrypt. Use an ORM or parameterised queries.
+- Return generic errors, log details server side without personal data, and add TOTP for admin accounts.
+- Run npm audit in CI and enable Dependabot.
