@@ -12,7 +12,7 @@ export function SiteFooter() {
         </div>
         <nav className="site-footer__cols" aria-label="Footer">
           <div>
-            <h2>Use Africa Credit OS</h2>
+            <h2>Use Onekana</h2>
             <Link to="/entrepreneur">Get a business report</Link>
             <Link to="/investor">Practise investing</Link>
             <Link to="/how-it-works">How the score works</Link>
@@ -31,7 +31,7 @@ export function SiteFooter() {
         </nav>
       </div>
       <p className="site-footer__legal">
-        © 2026 {brand.legalName}. Africa Credit OS is not a lender and does not give financial advice. Investor practice uses demo money only.
+        © 2026 {brand.legalName}. Onekana is not a lender and does not give financial advice. Investor practice uses demo money only.
       </p>
     </footer>
   )

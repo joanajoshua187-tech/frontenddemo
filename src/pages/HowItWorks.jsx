@@ -18,8 +18,8 @@ export default function HowItWorks() {
   useDocumentTitle('How it works')
   return (
     <article className="page">
-      <h1 className="page__title">How Africa Credit OS works</h1>
-      <p className="page__lede">Nothing in an Africa Credit OS report is a black box. This page shows every rule we use, so you can check your own report by hand.</p>
+      <h1 className="page__title">How Onekana works</h1>
+      <p className="page__lede">Nothing in an Onekana profile is a black box. This page shows every rule we use, so you can check your own report by hand.</p>
 
       <section className="prose-block">
         <h2>For business owners</h2>
@@ -45,6 +45,32 @@ export default function HowItWorks() {
           </table>
         </div>
         <p className="note">The AI never produces the score. It only reads your records. The score comes from the fixed rules above.</p>
+      </section>
+
+      <section className="prose-block">
+        <h2>How records are verified</h2>
+        <p>With your consent, Onekana reads statements from mobile money providers such as M-Pesa, Airtel Money, Mixx by Yas and HaloPesa, and from your bank. Those lines count as verified at the source. Lines from ledger photos count as confirmed by you. When the same amount appears on the same day in two places, or you upload the same photo twice, we stop and ask you before counting it.</p>
+      </section>
+
+      <section className="prose-block">
+        <h2>How the trust level is built</h2>
+        <div className="table-wrap">
+          <table className="data-table">
+            <thead><tr><th scope="col">Part</th><th scope="col">What it measures</th><th scope="col" className="num-col">Points</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Consistency</th><td>Weeks with an upload, out of the last 12</td><td className="num-col num">up to 40</td></tr>
+              <tr><th scope="row">Verification</th><td>Share of sales confirmed by a bank or mobile money provider</td><td className="num-col num">up to 30</td></tr>
+              <tr><th scope="row">Responsiveness</th><td>Flagged lines you have answered</td><td className="num-col num">up to 15</td></tr>
+              <tr><th scope="row">History</th><td>12 weeks or more, 24 weeks or more</td><td className="num-col num">up to 15</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>70 and above is Strong, 40 to 69 is Growing, below 40 is Building.</p>
+      </section>
+
+      <section className="prose-block">
+        <h2>What you are ready for</h2>
+        <p>Finance needs a score of 60 and a trust level of 60. Savings needs a business that keeps money after costs. Insurance is sized from what you spend on stock. Being listed for community investors needs a score of 70, a Strong trust level and six months of records, and a bank officer still reviews every listing.</p>
       </section>
 
       <section className="prose-block">

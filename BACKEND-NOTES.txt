@@ -1,6 +1,6 @@
-# Africa Credit OS frontend
+# Onekana frontend
 
-React and React Router frontend for Africa Credit OS. Entrepreneurs verify a registered business, upload ledger photos and mobile money screenshots, and get a report with a score, a loan level and savings advice. Investors open a demo account and practise with demo money on verified listings.
+React and React Router frontend for Onekana. Entrepreneurs verify a registered business, upload ledger photos and mobile money screenshots, and get a report with a score, a loan level and savings advice. Investors open a demo account and practise with demo money on verified listings.
 
 ## Run
 

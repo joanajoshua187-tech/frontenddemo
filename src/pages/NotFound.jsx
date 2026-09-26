@@ -10,7 +10,7 @@ export default function NotFound() {
       <p className="page__lede">The link may be old or mistyped.</p>
       <div className="actions">
         <Link to="/" className="btn btn--primary">Go to the home page</Link>
-        <Link to="/about" className="btn btn--ghost">About Africa Credit OS</Link>
+        <Link to="/about" className="btn btn--ghost">About Onekana</Link>
       </div>
     </section>
   )

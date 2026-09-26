@@ -1,34 +1,47 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAppState } from '../hooks/useAppState'
-import { useAssessment } from '../hooks/useAssessment'
-import { useDocumentTitle } from '../hooks/useDocumentTitle'
-import { useToast } from '../hooks/useToast'
-import { CountUpMoney } from '../components/ScoreDial'
-import { SCORE_LEVELS } from '../utils/scoring'
-import { LOAN_TERMS, LOAN_PURPOSES, ILLUSTRATIVE_RATES, monthlyInstalment, schedule, affordability } from '../utils/loan'
-import { tsh, plain, roundDown } from '../utils/format'
+import { useAppState } from '../../hooks/useAppState'
+import { useProfile } from '../../hooks/useProfile'
+import { useDocumentTitle } from '../../hooks/useDocumentTitle'
+import { useToast } from '../../hooks/useToast'
+import { CountUpMoney } from '../../components/ScoreDial'
+import { SCORE_LEVELS } from '../../utils/scoring'
+import { LOAN_TERMS, LOAN_PURPOSES, ILLUSTRATIVE_RATES, monthlyInstalment, schedule, affordability } from '../../utils/loan'
+import { tsh, plain, roundDown } from '../../utils/format'
 
 export default function LoanPlanner() {
   useDocumentTitle('Plan a loan')
   const { state, dispatch } = useAppState()
   const notify = useToast()
-  const report = useAssessment()
+  const profile = useProfile()
+  if (!profile.credit) {
+    return (
+      <div className="empty-state">
+        <h2>Loan planning needs your records</h2>
+        <p>Add at least one month of records so we can see what the business keeps each month.</p>
+        <Link to="/entrepreneur/app/records" className="btn btn--primary">Add records</Link>
+      </div>
+    )
+  }
+  return <Planner profile={profile} state={state} dispatch={dispatch} notify={notify} />
+}
+
+function Planner({ profile, state, dispatch, notify }) {
+  const report = { ...profile.credit, months: profile.series.months, moneyIn: profile.series.moneyIn, moneyOut: profile.series.moneyOut }
   const { level, kpis, monthlyRepayment, indicativeLoan, score } = report
   const rate = ILLUSTRATIVE_RATES[level.id]
   const nextLevel = SCORE_LEVELS.find((l) => l.min > score)
 
   const maxAmount = Math.max(100000, roundDown(Math.max(indicativeLoan * 1.5, level.cap), 50000))
-  const [amount, setAmount] = useState(state.loanPlan?.amount ?? Math.max(100000, indicativeLoan))
-  const [term, setTerm] = useState(state.loanPlan?.term ?? 12)
-  const [purpose, setPurpose] = useState(state.loanPlan?.purpose ?? LOAN_PURPOSES[0])
+  const [amount, setAmount] = useState(state.ent.loanPlan?.amount ?? Math.max(100000, indicativeLoan))
+  const [term, setTerm] = useState(state.ent.loanPlan?.term ?? 12)
+  const [purpose, setPurpose] = useState(state.ent.loanPlan?.purpose ?? LOAN_PURPOSES[0])
   const [showSchedule, setShowSchedule] = useState(false)
 
   if (!rate) {
     return (
       <section className="page page--narrow">
-        <Link to="/entrepreneur/report" className="back-link">Back to your report</Link>
-        <h1 className="page__title">Build first, then borrow</h1>
+                <h1 className="page__title">Build first, then borrow</h1>
         <p className="page__lede">
           Your score of {score} puts you at {level.name}. Borrowing now could put the business under pressure.
           Reach {SCORE_LEVELS[1].min} to unlock loan planning.
@@ -71,16 +84,15 @@ export default function LoanPlanner() {
   tips.push(`Your slowest month was ${report.months[slowIndex]}, when the business kept ${tsh(slowSurplus)}. Keep at least one instalment saved before you borrow.`)
 
   function save() {
-    dispatch({ type: 'loan/planned', plan: { amount, term, purpose, rate, instalment, totalInterest } })
-    notify('Loan plan saved to your report.')
+    dispatch({ type: 'ent/loanPlan', plan: { amount, term, months: term, purpose, rate, payment: instalment, totalInterest } })
+    notify('Loan plan saved. A partner bank sees it when you share your profile.')
   }
 
   return (
     <section className="page">
-      <Link to="/entrepreneur/report" className="back-link">Back to your report</Link>
-      <header className="report-head">
+            <header className="report-head">
         <div>
-          <p className="report-head__kicker">Loan planner · {state.business.businessName}</p>
+          <p className="report-head__kicker">Loan planner · {state.ent.business.businessName}</p>
           <h1 className="page__title">Plan a loan you can repay</h1>
           <p className="page__lede">
             Your score of <strong>{score}</strong> puts you at <strong>{level.name}, {level.label}</strong>.
@@ -158,7 +170,7 @@ export default function LoanPlanner() {
             <div><dt>Illustrative rate</dt><dd className="num">{Math.round(rate * 100)}% a year</dd></div>
           </dl>
           <div className="actions actions--stack">
-            <button type="button" className="btn btn--primary" onClick={save}>Save this plan to my report</button>
+            <button type="button" className="btn btn--primary" onClick={save}>Save this plan</button>
             <button type="button" className="btn btn--ghost" onClick={() => setShowSchedule((v) => !v)} aria-expanded={showSchedule} aria-controls="loan-schedule">
               {showSchedule ? 'Hide' : 'Show'} month-by-month schedule
             </button>

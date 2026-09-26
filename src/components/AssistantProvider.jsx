@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AssistantContext } from '../context/assistantContext'
 import { useAppState } from '../hooks/useAppState'
-import { useAssessment } from '../hooks/useAssessment'
+import { useProfile } from '../hooks/useProfile'
 import { useSpeech } from '../hooks/useSpeech'
 import { respond, SUGGESTIONS, GREETING } from '../data/assistantIntents'
 import { Icon } from './Icon'
@@ -18,17 +18,25 @@ export function AssistantProvider({ children }) {
   const inputRef = useRef(null)
   const navigate = useNavigate()
   const { state } = useAppState()
-  const report = useAssessment()
+  const profile = useProfile()
   const { supported, listening, error, listen, stop, speak, silence } = useSpeech(lang)
 
   const ctx = useMemo(
     () => ({
-      verified: state.verification?.status === 'verified',
-      report,
-      investor: state.investor,
-      balance: state.wallet.balance,
+      verified: Boolean(state.ent.business),
+      business: state.ent.business,
+      credit: profile.credit,
+      trust: profile.trust,
+      readiness: profile.readiness,
+      savingsPlan: profile.savingsPlan,
+      pending: state.ent.transactions.filter((t) => t.status === 'pending').length,
+      records: state.ent.transactions.filter((t) => t.status !== 'removed').length,
+      investor: state.inv.investor,
+      balance: state.inv.wallet.balance,
+      holdings: state.inv.holdings.length,
+      lessonsDone: state.inv.lessonsDone.length,
     }),
-    [state.verification, state.investor, state.wallet.balance, report],
+    [state.ent, state.inv, profile],
   )
 
   useEffect(() => {

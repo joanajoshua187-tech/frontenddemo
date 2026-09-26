@@ -43,7 +43,7 @@ export function LedgerPage() {
   const [active, setActive] = useState(0)
   const current = LINES[active]
   return (
-    <figure className="ledger" aria-label="A ledger page. Choose a line to see how Africa Credit OS read it.">
+    <figure className="ledger" aria-label="A ledger page. Choose a line to see how Onekana read it.">
       <div className="ledger__page">
         <p className="ledger__head">
           <span>Tarehe</span>

@@ -21,7 +21,7 @@ const CHECKS = [
 
 const FAQ = [
   { q: 'Is the credit readiness score the same as a credit bureau score?', a: 'No. It is a readiness score built only from the records you upload. A lender may look at it alongside a credit reference bureau report and its own checks.' },
-  { q: 'My business is not registered yet. Can I still use Africa Credit OS?', a: 'You need a registered business to get a report. Register your business name with BRELA and get a TIN from TRA, then come back with those numbers.' },
+  { q: 'My business is not registered yet. Can I still use Onekana?', a: 'You need a registered business to get a report. Register your business name with BRELA and get a TIN from TRA, then come back with those numbers.' },
   { q: 'Which records give the best result?', a: 'Clear photos of every ledger page, one page per photo, and mobile money statement screenshots for the same months. More months give a steadier score.' },
   { q: 'Is the investor money real?', a: 'No. Every investor account gets TSh 1,000,000 in demo money. It has no cash value and cannot be withdrawn. It exists so you can practise before risking your own savings.' },
   { q: 'Who sees my records?', a: 'Only you. A lender sees your report only after you press Share, and never your NIDA number.' },
@@ -35,7 +35,7 @@ export default function Home() {
         <div className="hero__copy">
           <h1 className="hero__title">Your ledger book already proves your business works.</h1>
           <p className="hero__lede">
-            Africa Credit OS checks that your business is registered, reads photos of your ledger and your mobile money screenshots,
+            Onekana checks that your business is registered, reads photos of your ledger and your mobile money screenshots,
             and gives you a report with a credit score, a loan level and a savings plan you can keep to.
           </p>
           <div className="hero__actions">
